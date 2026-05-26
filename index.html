@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Qwipo Digi Dukan — Vendor Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <style>
+    :root {
+      --orange:    #f97316;
+      --orange-dk: #ea580c;
+      --orange-lt: #fff7ed;
+      --orange-bd: #fed7aa;
+      --green:     #16a34a;
+      --green-lt:  #f0fdf4;
+      --green-bd:  #bbf7d0;
+      --red:       #dc2626;
+      --red-lt:    #fef2f2;
+      --red-bd:    #fecaca;
+      --yellow:    #d97706;
+      --yellow-lt: #fffbeb;
+      --yellow-bd: #fde68a;
+      --g50:  #f9fafb; --g100: #f3f4f6; --g200: #e5e7eb;
+      --g400: #9ca3af; --g600: #4b5563; --g800: #1f2937;
+      --text: #111827; --text-sm: #6b7280;
+      --r: 14px; --r-sm: 10px;
+      --sh: 0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+      --sh-md: 0 4px 12px rgba(0,0,0,.10);
+      --sh-lg: 0 10px 40px rgba(0,0,0,.14);
+    }
+    *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--g100);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+
+    /* ══ SHELL ══ */
+    .shell {
+      max-width: 420px;
+      margin: 0 auto;
+      background: #fff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 0 0 1px var(--g200);
+      position: relative;
+    }
+
+    /* ══ SIDEBAR (hidden until logged-in on tablet+) ══ */
+    .sidebar {
+      display: none;
+      flex-direction: column;
+      width: 72px;
+      background: #fff;
+      border-right: 1px solid var(--g200);
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      flex-shrink: 0;
+      overflow: hidden;
+      transition: width .2s ease;
+      z-index: 40;
+    }
+    .sb-brand {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      padding: 1.25rem 1rem;
+      border-bottom: 1px solid var(--g100);
+      flex-shrink: 0;
+    }
+    .sb-mark {
+      width: 36px; height: 36px;
+      background: var(--orange);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .sb-mark svg { width: 20px; height: 20px; color: #fff; }
+    .sb-name {
+      font-size: .88rem; font-weight: 800;
+      white-space: nowrap; overflow: hidden;
+      display: none;
+    }
+    .sb-name em { color: var(--orange); font-style: normal; }
+
+    .sb-vendor {
+      display: none;
+      align-items: center;
+      gap: .75rem;
+      padding: .9rem 1rem;
+      border-bottom: 1px solid var(--g100);
+      flex-shrink: 0;
+    }
+    .sb-avatar {
+      width: 34px; height: 34px;
+      background: var(--orange-lt);
+      border: 2px solid var(--orange-bd);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: .85rem; color: var(--orange);
+      flex-shrink: 0;
+    }
+    .sb-vname { font-size: .82rem; font-weight: 700; white-space: nowrap; }
+    .sb-vsub  { font-size: .7rem; color: var(--text-sm); white-space: nowrap; }
+
+    .sb-nav { flex: 1; padding: .5rem 0; display: flex; flex-direction: column; gap: .15rem; }
+    .sidebar-tab {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      padding: .75rem 1rem;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: .85rem;
+      font-weight: 600;
+      color: var(--g600);
+      border-radius: 0;
+      transition: background .12s, color .12s;
+      width: 100%;
+      white-space: nowrap;
+      text-align: left;
+    }
+    .sidebar-tab svg { width: 20px; height: 20px; flex-shrink: 0; }
+    .sidebar-tab span { display: none; }
+    .sidebar-tab:hover { background: var(--g50); color: var(--g800); }
+    .sidebar-tab.active { background: var(--orange-lt); color: var(--orange); }
+    .sidebar-tab.active svg { color: var(--orange); }
+
+    .sb-footer {
+      padding: .75rem;
+      border-top: 1px solid var(--g100);
+      flex-shrink: 0;
+    }
+    .sb-call {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      width: 100%;
+      padding: .65rem .75rem;
+      background: var(--green-lt);
+      border: 1.5px solid var(--green-bd);
+      border-radius: var(--r-sm);
+      cursor: pointer;
+      font-family: inherit;
+      font-size: .78rem;
+      font-weight: 700;
+      color: var(--green);
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .sb-call svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .sb-call span { display: none; }
+    .sb-foot-note {
+      display: none;
+      font-size: .64rem;
+      color: var(--g400);
+      text-align: center;
+      margin-top: .4rem;
+    }
+
+    /* ══ MAIN WRAP ══ */
+    .main-wrap {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      background: var(--g50);
+    }
+
+    /* ══ SCREENS ══ */
+    .screen { display: none; flex-direction: column; flex: 1; animation: pop .2s ease; }
+    .screen.active { display: flex; }
+    @keyframes pop { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: translateY(0) } }
+
+    /* ══ TOPBAR ══ */
+    .topbar {
+      display: flex; align-items: center; gap: .75rem;
+      padding: 1rem 1.25rem .9rem;
+      background: #fff;
+      border-bottom: 1px solid var(--g200);
+      position: sticky; top: 0; z-index: 30;
+    }
+    .topbar-back {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--g100);
+      border: none;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; flex-shrink: 0;
+    }
+    .topbar-back svg { width: 18px; height: 18px; color: var(--g800); }
+    .topbar-title { font-weight: 700; font-size: 1rem; flex: 1; }
+    .topbar-title small { display: block; font-size: .72rem; color: var(--text-sm); font-weight: 400; }
+    .lang-toggle {
+      display: flex; background: var(--g100); border-radius: 20px;
+      padding: 3px; gap: 2px; border: 1px solid var(--g200);
+    }
+    .lang-btn {
+      border: none; background: transparent; cursor: pointer;
+      padding: .2rem .55rem; border-radius: 16px;
+      font-size: .72rem; font-weight: 600; color: var(--g600); font-family: inherit;
+    }
+    .lang-btn.active { background: #fff; color: var(--orange); box-shadow: var(--sh); }
+
+    /* ══ SCROLL BODY ══ */
+    .scroll-body { flex: 1; overflow-y: auto; padding: 1.25rem; padding-bottom: 90px; }
+    .scroll-body.no-pad { padding: 0; padding-bottom: 90px; }
+
+    /* ══ BOTTOM NAV ══ */
+    .bottom-nav {
+      display: none;
+      position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+      width: 100%; max-width: 420px;
+      background: #fff; border-top: 1px solid var(--g200);
+      z-index: 40; box-shadow: 0 -2px 10px rgba(0,0,0,.06);
+    }
+    .nav-tab {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; gap: .2rem;
+      padding: .65rem .5rem .55rem;
+      cursor: pointer; border: none; background: transparent; font-family: inherit;
+    }
+    .nav-tab svg { width: 22px; height: 22px; color: var(--g400); }
+    .nav-tab span { font-size: .6rem; font-weight: 600; color: var(--g400); }
+    .nav-tab.active svg { color: var(--orange); }
+    .nav-tab.active span { color: var(--orange); }
+
+    /* ══ CALL FAB ══ */
+    .call-fab {
+      display: none;
+      position: fixed; bottom: 80px; right: calc(50% - 200px);
+      width: 52px; height: 52px;
+      background: var(--green); border-radius: 50%;
+      align-items: center; justify-content: center;
+      box-shadow: 0 4px 14px rgba(22,163,74,.4);
+      cursor: pointer; z-index: 50; border: none;
+    }
+    .call-fab svg { width: 22px; height: 22px; color: #fff; }
+
+    /* ══ LOGGED-IN STATE ══ */
+    .shell.logged-in .bottom-nav { display: flex; }
+    .shell.logged-in .call-fab   { display: flex; }
+
+    /* ══ BUTTONS ══ */
+    .btn {
+      display: flex; align-items: center; justify-content: center;
+      gap: .45rem; width: 100%; padding: .85rem 1.25rem;
+      border-radius: var(--r-sm); font-family: inherit;
+      font-size: .95rem; font-weight: 700;
+      cursor: pointer; border: none; transition: all .15s ease;
+    }
+    .btn svg { width: 18px; height: 18px; }
+    .btn-orange { background: var(--orange); color: #fff; }
+    .btn-orange:hover { background: var(--orange-dk); }
+    .btn-orange:active { transform: scale(.98); }
+    .btn-outline { background: transparent; border: 1.5px solid var(--g200); color: var(--g800); }
+    .btn-outline:hover { border-color: var(--orange); color: var(--orange); }
+    .btn-green { background: var(--green); color: #fff; }
+    .btn-sm { width: auto; padding: .45rem .9rem; font-size: .8rem; border-radius: 8px; }
+    .btn:disabled { opacity: .45; pointer-events: none; }
+
+    /* ══ CARDS ══ */
+    .card { background: #fff; border: 1px solid var(--g200); border-radius: var(--r); box-shadow: var(--sh); overflow: hidden; margin-bottom: 1rem; }
+    .card-body { padding: 1.1rem 1.25rem; }
+
+    /* ══ BADGES ══ */
+    .badge { display: inline-flex; align-items: center; gap: .25rem; padding: .2rem .6rem; border-radius: 20px; font-size: .72rem; font-weight: 700; }
+    .badge-green  { background: var(--green-lt);  color: var(--green);  border: 1px solid var(--green-bd); }
+    .badge-orange { background: var(--orange-lt); color: var(--orange); border: 1px solid var(--orange-bd); }
+    .badge-grey   { background: var(--g100);      color: var(--g600);   border: 1px solid var(--g200); }
+    .badge-yellow { background: var(--yellow-lt); color: var(--yellow); border: 1px solid var(--yellow-bd); }
+    .badge-red    { background: var(--red-lt);    color: var(--red);    border: 1px solid var(--red-bd); }
+
+    label { font-size: .82rem; font-weight: 600; color: var(--g600); display: block; margin-bottom: .35rem; }
+    input[type="text"],input[type="tel"],input[type="number"],select,textarea {
+      width: 100%; background: var(--g50); border: 1.5px solid var(--g200);
+      color: var(--text); border-radius: var(--r-sm); padding: .75rem 1rem;
+      font-family: inherit; font-size: .95rem; outline: none; transition: border .15s;
+    }
+    input:focus,select:focus,textarea:focus {
+      border-color: var(--orange); background: #fff;
+      box-shadow: 0 0 0 3px rgba(249,115,22,.12);
+    }
+    .form-group { margin-bottom: 1rem; }
+    .divider { height: 1px; background: var(--g100); margin: 1.25rem 0; }
+    .section-label { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--g400); margin-bottom: .75rem; }
+
+    /* ══ ALERTS ══ */
+    .alert { display: flex; gap: .75rem; padding: .9rem 1rem; border-radius: var(--r-sm); margin-bottom: 1rem; font-size: .83rem; }
+    .alert svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; }
+    .alert-info    { background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af; }
+    .alert-success { background: var(--green-lt); border: 1px solid var(--green-bd); color: #14532d; }
+
+    /* ══ PROGRESS BAR ══ */
+    .prog-bar { height: 4px; background: var(--g200); border-radius: 2px; margin-top: .4rem; overflow: hidden; }
+    .prog-fill { height: 100%; border-radius: 2px; transition: width .4s ease; }
+    .prog-fill.orange { background: var(--orange); }
+    .prog-fill.green  { background: var(--green); }
+
+    /* ══ LOGIN ══ */
+    #s-login { background: #fff; }
+    .login-card { width: 100%; display: flex; flex-direction: column; }
+    .login-brand { padding: 2.5rem 1.5rem 1.5rem; text-align: center; }
+    .brand-mark {
+      width: 72px; height: 72px; background: var(--orange); border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1rem; box-shadow: 0 6px 20px rgba(249,115,22,.35);
+    }
+    .brand-mark svg { width: 38px; height: 38px; color: #fff; }
+    .brand-name { font-size: 1.5rem; font-weight: 800; }
+    .brand-name span { color: var(--orange); }
+    .brand-sub    { font-size: .85rem; color: var(--text-sm); margin-top: .3rem; }
+    .brand-sub-hi { font-size: .8rem; color: var(--orange); font-weight: 500; }
+    .login-form-wrap { padding: 0 1.5rem 2rem; }
+
+    /* ══ OTP ══ */
+    .otp-wrap { display: flex; gap: .6rem; justify-content: center; margin: 1.25rem 0; }
+    .otp-box {
+      width: 52px; height: 60px; background: var(--g50);
+      border: 2px solid var(--g200); border-radius: var(--r-sm);
+      text-align: center; font-size: 1.6rem; font-weight: 800;
+      font-family: inherit; color: var(--text); outline: none;
+    }
+    .otp-box:focus { border-color: var(--orange); background: #fff; box-shadow: 0 0 0 3px rgba(249,115,22,.12); }
+
+    /* ══ HOME ══ */
+    .home-header {
+      background: linear-gradient(135deg, var(--orange) 0%, #fb923c 100%);
+      padding: 1.5rem 1.25rem 4rem; color: #fff; flex-shrink: 0;
+    }
+    .home-greeting    { font-size: 1.2rem; font-weight: 800; }
+    .home-greeting-hi { font-size: .85rem; opacity: .85; margin-top: .15rem; }
+    .progress-card {
+      background: #fff; border-radius: var(--r); box-shadow: var(--sh-md);
+      padding: 1.1rem 1.25rem; margin: -2.5rem 1.25rem 0; position: relative; z-index: 2;
+    }
+    .progress-label  { font-size: .78rem; font-weight: 600; color: var(--text-sm); margin-bottom: .5rem; }
+    .progress-row    { display: flex; align-items: center; gap: .75rem; }
+    .progress-big-bar{ flex: 1; height: 10px; background: var(--g100); border-radius: 5px; overflow: hidden; }
+    .progress-big-fill{ height: 100%; background: var(--orange); border-radius: 5px; }
+    .progress-pct    { font-weight: 800; font-size: .88rem; color: var(--orange); white-space: nowrap; }
+
+    .notif-strip {
+      background: var(--orange-lt); border-left: 3px solid var(--orange);
+      padding: .7rem 1rem; font-size: .8rem; color: var(--g800);
+      display: flex; align-items: center; gap: .5rem;
+      margin-bottom: 1rem; border-radius: 0 var(--r-sm) var(--r-sm) 0;
+    }
+    .notif-strip svg { width: 15px; height: 15px; color: var(--orange); flex-shrink: 0; }
+
+    /* ══ STEP CARDS ══ */
+    .step-card { border: 1.5px solid var(--g200); border-radius: var(--r); overflow: hidden; margin-bottom: .75rem; transition: border-color .15s; }
+    .step-card.done   { border-color: var(--green-bd);  background: var(--green-lt); }
+    .step-card.active { border-color: var(--orange); background: var(--orange-lt); box-shadow: 0 2px 12px rgba(249,115,22,.15); }
+    .step-card.locked { opacity: .55; }
+    .step-card-header { display: flex; align-items: center; gap: .9rem; padding: .9rem 1.1rem; }
+    .step-num {
+      width: 38px; height: 38px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: .9rem; flex-shrink: 0;
+    }
+    .step-card.done   .step-num { background: var(--green);  color: #fff; }
+    .step-card.active .step-num { background: var(--orange); color: #fff; }
+    .step-card.locked .step-num { background: var(--g200);   color: var(--g600); }
+    .step-card-info  { flex: 1; }
+    .step-card-title { font-weight: 700; font-size: .9rem; }
+    .step-card-title-hi { font-size: .78rem; color: var(--g600); font-weight: 400; }
+    .step-card-sub   { font-size: .75rem; color: var(--text-sm); margin-top: .1rem; }
+    .step-card-body  { padding: 0 1.1rem 1.1rem; }
+
+    /* ══ DOC ROWS ══ */
+    .doc-row {
+      display: flex; align-items: center; gap: .9rem;
+      padding: .9rem 1rem; border: 1.5px solid var(--g200);
+      border-radius: var(--r-sm); margin-bottom: .6rem; background: #fff; transition: border-color .15s;
+    }
+    .doc-row.uploaded { border-color: var(--green-bd); background: var(--green-lt); }
+    .doc-row.required { border-color: var(--orange);   background: var(--orange-lt); }
+    .doc-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .doc-icon svg { width: 20px; height: 20px; }
+    .doc-icon.green  { background: var(--green-lt);  color: var(--green); }
+    .doc-icon.orange { background: var(--orange-lt); color: var(--orange); }
+    .doc-icon.grey   { background: var(--g100);      color: var(--g400); }
+    .doc-info  { flex: 1; }
+    .doc-name  { font-weight: 600; font-size: .85rem; }
+    .doc-name-hi { font-size: .72rem; color: var(--g600); }
+    .doc-status { font-size: .72rem; }
+    .doc-status.ok      { color: var(--green);  font-weight: 600; }
+    .doc-status.warn    { color: var(--orange); }
+    .doc-status.pending { color: var(--g400); }
+
+    /* ══ UPLOAD ZONE ══ */
+    .photo-zone {
+      border: 2px dashed var(--g200); border-radius: var(--r);
+      padding: 1.5rem 1rem; text-align: center; cursor: pointer; transition: all .15s; background: var(--g50);
+    }
+    .photo-zone:hover, .photo-zone.uploading { border-color: var(--orange); background: var(--orange-lt); }
+    .photo-zone svg { width: 36px; height: 36px; color: var(--g400); margin-bottom: .5rem; }
+    .photo-zone:hover svg { color: var(--orange); }
+    .photo-zone-title { font-weight: 700; font-size: .88rem; margin-bottom: .2rem; }
+    .photo-zone-sub   { font-size: .75rem; color: var(--text-sm); }
+
+    /* ══ VIDEO CARDS ══ */
+    .video-card {
+      display: flex; align-items: center; gap: 1rem;
+      padding: .9rem 1rem; border: 1.5px solid var(--g200);
+      border-radius: var(--r-sm); margin-bottom: .6rem;
+      cursor: pointer; transition: border-color .15s, background .15s; background: #fff;
+    }
+    .video-card:hover  { border-color: var(--orange); background: var(--orange-lt); }
+    .video-card.done   { border-color: var(--green-bd); background: var(--green-lt); }
+    .video-card.locked { opacity: .5; pointer-events: none; }
+    .video-thumb {
+      width: 56px; height: 42px; background: var(--g800);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .video-thumb svg { width: 20px; height: 20px; color: #fff; }
+    .video-thumb.done-thumb { background: var(--green); }
+    .video-thumb.grey-thumb { background: var(--g400); }
+    .video-title    { font-weight: 600; font-size: .85rem; }
+    .video-title-hi { font-size: .72rem; color: var(--g600); }
+    .video-meta     { font-size: .72rem; color: var(--text-sm); margin-top: .15rem; }
+
+    /* ══ FAQ ══ */
+    .faq-item { border-bottom: 1px solid var(--g100); padding: .9rem 0; }
+    .faq-item:last-child { border-bottom: none; }
+    .faq-q { display: flex; align-items: center; justify-content: space-between; cursor: pointer; font-weight: 600; font-size: .88rem; gap: .5rem; }
+    .faq-q svg { width: 16px; height: 16px; color: var(--g400); flex-shrink: 0; }
+    .faq-q-hi { font-size: .75rem; color: var(--g600); font-weight: 400; margin-top: .15rem; }
+    .faq-a { display: none; font-size: .83rem; color: var(--g600); padding-top: .65rem; line-height: 1.6; }
+
+    /* ══ TOAST ══ */
+    #toast {
+      position: fixed; bottom: 90px; left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--green); color: #fff;
+      border-radius: 30px; padding: .65rem 1.25rem;
+      font-weight: 700; font-size: .85rem;
+      display: flex; align-items: center; gap: .4rem;
+      opacity: 0; transition: all .25s ease;
+      z-index: 100; white-space: nowrap; max-width: 90vw; pointer-events: none;
+    }
+    #toast svg { width: 16px; height: 16px; }
+
+    /* ════════════════════════════════
+       TABLET  768px+
+    ════════════════════════════════ */
+    @media (min-width: 768px) {
+
+      body { background: var(--g100); }
+
+      .shell {
+        max-width: 100%;
+        margin: 0;
+        box-shadow: none;
+        border-radius: 0;
+      }
+
+      /* Shell becomes a row after login */
+      .shell.logged-in {
+        flex-direction: row;
+        align-items: stretch;
+      }
+
+      /* Show sidebar, hide mobile nav */
+      .shell.logged-in .sidebar   { display: flex; }
+      .shell.logged-in .bottom-nav{ display: none !important; }
+      .shell.logged-in .call-fab  { display: none !important; }
+
+      /* Sidebar icon-only at tablet */
+      .sidebar { flex-shrink: 0; }
+
+      /* Scroll body: no bottom-nav padding */
+      .scroll-body, .scroll-body.no-pad {
+        padding-bottom: 2rem;
+      }
+
+      /* Login: centered card on gradient */
+      #s-login {
+        background: linear-gradient(135deg, var(--orange) 0%, #fb923c 100%) !important;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 2rem;
+      }
+      .login-card {
+        background: #fff;
+        border-radius: var(--r);
+        max-width: 440px;
+        width: 100%;
+        box-shadow: var(--sh-lg);
+        overflow: hidden;
+      }
+
+      /* Topbar: hide back button on non-home screens since sidebar handles nav */
+      .topbar-back { display: none; }
+
+      /* Content max-width */
+      .scroll-body { max-width: 760px; }
+
+      /* Home: wider progress card */
+      .progress-card { margin: -2.5rem 1.5rem 0; }
+
+      /* Main wrap background */
+      .main-wrap { background: var(--g50); }
+      .screen { background: #fff; }
+
+      /* Toast: adjust for no bottom nav */
+      #toast { bottom: 24px; }
+    }
+
+    /* ════════════════════════════════
+       DESKTOP  1024px+
+    ════════════════════════════════ */
+    @media (min-width: 1024px) {
+
+      /* Sidebar expands */
+      .sidebar { width: 220px; }
+      .sb-name         { display: block; }
+      .sb-vendor       { display: flex; }
+      .sidebar-tab span{ display: block; }
+      .sb-call span    { display: block; }
+      .sb-foot-note    { display: block; }
+
+      /* Content wider max */
+      .scroll-body { max-width: 840px; }
+
+      /* Home header more padding */
+      .home-header { padding: 2rem 2rem 5rem; }
+      .progress-card { margin: -3rem 2rem 0; }
+
+      /* Help screen: 2-column layout */
+      .help-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+        align-items: start;
+      }
+
+      /* Training: video cards in 2 cols */
+      .training-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: .75rem;
+      }
+      .training-grid .video-card { margin-bottom: 0; }
+
+      /* Bigger topbar on desktop */
+      .topbar { padding: 1.25rem 2rem; }
+      .topbar-title { font-size: 1.1rem; }
+    }
+
+    /* Small mobile: FAB near edge */
+    @media (max-width: 420px) {
+      .call-fab { right: 16px; }
+    }
+  </style>
+</head>
+<body>
+<div class="shell" id="shell">
+
+<!-- ══ SIDEBAR ══ -->
+<nav class="sidebar" id="sidebar">
+  <div class="sb-brand">
+    <div class="sb-mark"><i data-lucide="store"></i></div>
+    <div class="sb-name">Qwipo <em>Digi Dukan</em></div>
+  </div>
+  <div class="sb-vendor">
+    <div class="sb-avatar">R</div>
+    <div>
+      <div class="sb-vname">Ramesh Sharma</div>
+      <div class="sb-vsub">Sharma Distributors</div>
+    </div>
+  </div>
+  <div class="sb-nav">
+    <button class="sidebar-tab active" id="stab-home" onclick="nav('home');setTab('home')">
+      <i data-lucide="home"></i><span>Home / होम</span>
+    </button>
+    <button class="sidebar-tab" id="stab-docs" onclick="nav('docs');setTab('docs')">
+      <i data-lucide="file-text"></i><span>Documents</span>
+    </button>
+    <button class="sidebar-tab" id="stab-training" onclick="nav('training');setTab('training')">
+      <i data-lucide="play-circle"></i><span>Training</span>
+    </button>
+    <button class="sidebar-tab" id="stab-help" onclick="nav('help');setTab('help')">
+      <i data-lucide="headphones"></i><span>Help / मदद</span>
+    </button>
+  </div>
+  <div class="sb-footer">
+    <a href="tel:18000001234" style="text-decoration:none;display:block;">
+      <button class="sb-call">
+        <i data-lucide="phone"></i><span>1800-000-1234</span>
+      </button>
+    </a>
+    <div class="sb-foot-note">Free Support · Mon–Sat 9–7pm</div>
+  </div>
+</nav>
+
+<!-- ══ MAIN WRAP ══ -->
+<div class="main-wrap">
+
+<!-- ══════════════════════════════
+     SCREEN: LOGIN
+══════════════════════════════ -->
+<div id="s-login" class="screen active">
+  <div class="login-card">
+    <div class="login-brand">
+      <div class="brand-mark"><i data-lucide="store"></i></div>
+      <div class="brand-name">Qwipo <span>Digi Dukan</span></div>
+      <div class="brand-sub">Vendor Onboarding Portal</div>
+      <div class="brand-sub-hi">विक्रेता पंजीकरण पोर्टल</div>
+    </div>
+
+    <div class="login-form-wrap" id="login-phone">
+      <div class="form-group">
+        <label>Mobile Number &nbsp;/&nbsp; <span style="font-weight:400;color:var(--g600);">मोबाइल नंबर</span></label>
+        <div style="display:flex;gap:.5rem;">
+          <input type="text" value="+91" style="width:60px;flex-shrink:0;text-align:center;padding-left:.5rem;padding-right:.5rem;" />
+          <input type="tel" id="phone-input" placeholder="98765 43210" style="flex:1;" />
+        </div>
+      </div>
+      <button class="btn btn-orange" onclick="sendOtp()">
+        <i data-lucide="send"></i> Send OTP &nbsp;<span style="font-weight:400;font-size:.85rem;">/ OTP भेजें</span>
+      </button>
+      <div style="margin-top:1.5rem;text-align:center;font-size:.8rem;color:var(--g400);">
+        Need help? &nbsp;/&nbsp; मदद चाहिए?<br>
+        <a href="tel:18000001234" style="color:var(--orange);font-weight:700;text-decoration:none;">📞 Call: 1800-000-1234 (Free)</a>
+      </div>
+    </div>
+
+    <div class="login-form-wrap" style="display:none;" id="login-otp">
+      <div class="alert alert-info">
+        <i data-lucide="message-square"></i>
+        <div>OTP sent to <strong id="otp-phone-display">+91 98765 43210</strong><br>
+        <span style="font-size:.75rem;">OTP भेजा गया है</span></div>
+      </div>
+      <label>Enter OTP &nbsp;/&nbsp; <span style="font-weight:400;">OTP डालें</span></label>
+      <div class="otp-wrap">
+        <input class="otp-box" maxlength="1" type="tel" oninput="otpNext(this,1)" />
+        <input class="otp-box" maxlength="1" type="tel" oninput="otpNext(this,2)" />
+        <input class="otp-box" maxlength="1" type="tel" oninput="otpNext(this,3)" />
+        <input class="otp-box" maxlength="1" type="tel" oninput="otpNext(this,4)" />
+      </div>
+      <button class="btn btn-orange" onclick="verifyOtp()">
+        <i data-lucide="check-circle"></i> Verify &amp; Login &nbsp;<span style="font-weight:400;font-size:.85rem;">/ जाँचें</span>
+      </button>
+      <button class="btn btn-outline" style="margin-top:.6rem;" onclick="toast('OTP resent / दोबारा भेजा ✓')">
+        Resend OTP &nbsp;/&nbsp; दोबारा भेजें
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     SCREEN: HOME
+══════════════════════════════ -->
+<div id="s-home" class="screen">
+  <div class="home-header">
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;">
+      <div>
+        <div class="home-greeting">Namaste, Ramesh! 🙏</div>
+        <div class="home-greeting-hi">आपका स्वागत है</div>
+      </div>
+      <div class="lang-toggle">
+        <button class="lang-btn active" onclick="setLang('en',this)">EN</button>
+        <button class="lang-btn" onclick="setLang('hi',this)">हि</button>
+        <button class="lang-btn" onclick="setLang('te',this)">తె</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="progress-card">
+    <div class="progress-label">Your Progress &nbsp;·&nbsp; <span style="color:var(--orange);">आपकी प्रगति</span></div>
+    <div class="progress-row">
+      <div class="progress-big-bar"><div class="progress-big-fill" style="width:67%;"></div></div>
+      <div class="progress-pct">67%</div>
+    </div>
+    <div style="font-size:.72rem;color:var(--text-sm);margin-top:.4rem;">Step 2 of 3 complete &nbsp;·&nbsp; ~2 days to go live</div>
+  </div>
+
+  <div class="scroll-body" style="padding-top:1.25rem;margin-top:.75rem;">
+    <div class="notif-strip">
+      <i data-lucide="bell"></i>
+      FSSAI license is under review — 24 hrs &nbsp;/&nbsp; <span style="color:var(--orange);">जाँच चल रही है</span>
+    </div>
+
+    <!-- Step 1 -->
+    <div class="step-card done">
+      <div class="step-card-header">
+        <div class="step-num"><i data-lucide="check" style="width:18px;height:18px;"></i></div>
+        <div class="step-card-info">
+          <div class="step-card-title">Agreement Signed</div>
+          <div class="step-card-title-hi">समझौता हो गया ✓</div>
+          <div class="step-card-sub">MOV: ₹500 &nbsp;·&nbsp; Signed May 19, 2026</div>
+        </div>
+        <span class="badge badge-green">Done</span>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="step-card done">
+      <div class="step-card-header">
+        <div class="step-num"><i data-lucide="check" style="width:18px;height:18px;"></i></div>
+        <div class="step-card-info">
+          <div class="step-card-title">Documents Uploaded</div>
+          <div class="step-card-title-hi">दस्तावेज़ अपलोड हुए ✓</div>
+          <div class="step-card-sub">GSTIN verified &nbsp;·&nbsp; FSSAI under review</div>
+        </div>
+        <span class="badge badge-green">Done</span>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="step-card active">
+      <div class="step-card-header">
+        <div class="step-num">3</div>
+        <div class="step-card-info">
+          <div class="step-card-title">Add Your Products</div>
+          <div class="step-card-title-hi">अपने products डालें</div>
+          <div class="step-card-sub">48 added &nbsp;·&nbsp; 32 approved &nbsp;·&nbsp; <span style="color:var(--red);">4 errors</span></div>
+        </div>
+        <span class="badge badge-orange">Active</span>
+      </div>
+      <div class="step-card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem;">
+          <span style="font-size:.75rem;color:var(--g600);">48 / 50 minimum</span>
+          <span style="font-size:.75rem;color:var(--red);font-weight:600;">4 errors to fix</span>
+        </div>
+        <div class="prog-bar" style="height:6px;margin-bottom:.9rem;"><div class="prog-fill orange" style="width:96%;"></div></div>
+        <button class="btn btn-orange" onclick="toast('Opening Seller Store… / Seller Store खुल रहा है')">
+          <i data-lucide="external-link"></i>
+          Open Seller Store &nbsp;<span style="font-weight:400;font-size:.83rem;">/ Seller Store खोलें</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Go Live -->
+    <div class="step-card locked">
+      <div class="step-card-header">
+        <div class="step-num"><i data-lucide="rocket" style="width:16px;height:16px;"></i></div>
+        <div class="step-card-info">
+          <div class="step-card-title">Go Live! 🚀</div>
+          <div class="step-card-title-hi">Live हो जाएं! Retailers आपका store देखेंगे।</div>
+          <div class="step-card-sub">Needs: all docs verified &nbsp;·&nbsp; ≥20 approved SKUs</div>
+        </div>
+        <span class="badge badge-grey">Locked</span>
+      </div>
+    </div>
+
+    <!-- Training nudge -->
+    <div style="background:var(--orange-lt);border:1px solid var(--orange-bd);border-radius:var(--r);padding:1rem 1.1rem;display:flex;align-items:center;gap:.9rem;cursor:pointer;margin-top:.25rem;" onclick="nav('training');setTab('training')">
+      <div style="width:38px;height:38px;background:var(--orange);border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <i data-lucide="play-circle" style="width:20px;height:20px;color:#fff;"></i>
+      </div>
+      <div style="flex:1;">
+        <div style="font-weight:700;font-size:.88rem;">Training Videos Available</div>
+        <div style="font-size:.75rem;color:var(--g600);">Learn at your own pace &nbsp;·&nbsp; अपनी गति से सीखें</div>
+      </div>
+      <i data-lucide="chevron-right" style="width:18px;height:18px;color:var(--orange);flex-shrink:0;"></i>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     SCREEN: DOCUMENTS
+══════════════════════════════ -->
+<div id="s-docs" class="screen">
+  <div class="topbar">
+    <button class="topbar-back" onclick="nav('home')"><i data-lucide="arrow-left"></i></button>
+    <div class="topbar-title">Documents <small>दस्तावेज़ &nbsp;·&nbsp; పత్రాలు</small></div>
+  </div>
+  <div class="scroll-body">
+    <div class="alert alert-info">
+      <i data-lucide="info"></i>
+      <div>Upload clear photos or PDFs. Review within <strong>24–48 hours</strong>.<br>
+      <span style="font-size:.75rem;color:#1e40af;">साफ़ photo या PDF upload करें। 24-48 घंटों में जाँच होगी।</span></div>
+    </div>
+
+    <div class="section-label">Required Documents / आवश्यक दस्तावेज़</div>
+
+    <div class="doc-row uploaded">
+      <div class="doc-icon green"><i data-lucide="badge-check"></i></div>
+      <div class="doc-info">
+        <div class="doc-name">GSTIN Certificate</div>
+        <div class="doc-name-hi">GST प्रमाण पत्र</div>
+        <div class="doc-status ok">✓ Verified · सत्यापित हो गया</div>
+      </div>
+      <span class="badge badge-green">Done</span>
+    </div>
+
+    <div class="doc-row" style="border-color:var(--yellow-bd);background:var(--yellow-lt);">
+      <div class="doc-icon orange"><i data-lucide="clock"></i></div>
+      <div class="doc-info">
+        <div class="doc-name">FSSAI License</div>
+        <div class="doc-name-hi">FSSAI लाइसेंस <span style="font-size:.68rem;">(खाद्य व्यापार के लिए)</span></div>
+        <div class="doc-status warn">Under review · जाँच हो रही है…</div>
+      </div>
+      <span class="badge badge-yellow">Review</span>
+    </div>
+
+    <div class="doc-row required" id="bank-doc-row">
+      <div class="doc-icon orange"><i data-lucide="upload-cloud"></i></div>
+      <div class="doc-info">
+        <div class="doc-name">Cancelled Cheque</div>
+        <div class="doc-name-hi">बैंक का रद्द चेक <span style="font-size:.68rem;">(payment के लिए)</span></div>
+        <div class="doc-status warn">Not uploaded yet · अभी upload करें</div>
+      </div>
+      <button class="btn btn-orange btn-sm" onclick="triggerDocUpload('bank')">Upload</button>
+    </div>
+
+    <div class="doc-row" id="pan-doc-row">
+      <div class="doc-icon grey"><i data-lucide="credit-card"></i></div>
+      <div class="doc-info">
+        <div class="doc-name">PAN Card</div>
+        <div class="doc-name-hi">PAN कार्ड</div>
+        <div class="doc-status pending">Not uploaded · Upload करें</div>
+      </div>
+      <button class="btn btn-outline btn-sm" onclick="triggerDocUpload('pan')">Upload</button>
+    </div>
+
+    <div class="divider"></div>
+    <div class="section-label">Upload a Document / दस्तावेज़ Upload करें</div>
+
+    <div class="photo-zone" id="doc-upload-zone" onclick="simulateDocUpload()">
+      <i data-lucide="camera"></i>
+      <div class="photo-zone-title">Take Photo or Choose File</div>
+      <div class="photo-zone-title" style="font-size:.8rem;color:var(--orange);">फोटो लें या file चुनें</div>
+      <div class="photo-zone-sub">JPG, PNG, PDF · Max 5MB</div>
+    </div>
+    <div style="display:flex;gap:.75rem;margin-top:.75rem;">
+      <button class="btn btn-orange" style="flex:1;" onclick="simulateDocUpload()">
+        <i data-lucide="camera"></i> Camera / कैमरा
+      </button>
+      <button class="btn btn-outline" style="flex:1;" onclick="simulateDocUpload()">
+        <i data-lucide="folder-open"></i> Files / फ़ाइलें
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     SCREEN: TRAINING
+══════════════════════════════ -->
+<div id="s-training" class="screen">
+  <div class="topbar">
+    <button class="topbar-back" onclick="nav('home')"><i data-lucide="arrow-left"></i></button>
+    <div class="topbar-title">Training Videos <small>Training &nbsp;·&nbsp; శిక్షణ</small></div>
+  </div>
+  <div class="scroll-body">
+
+    <div class="alert alert-info">
+      <i data-lucide="info"></i>
+      <div>Watch videos whenever you need help — at your own pace.<br>
+      <span style="font-size:.75rem;color:#1e40af;">जब भी जरूरत हो videos देखें — अपनी गति से।</span></div>
+    </div>
+
+    <div style="background:var(--g50);border-radius:var(--r-sm);padding:.9rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:.75rem;">
+      <div style="flex:1;">
+        <div style="font-size:.75rem;color:var(--text-sm);margin-bottom:.35rem;">Overall / कुल प्रगति</div>
+        <div class="prog-bar" style="height:8px;"><div class="prog-fill orange" id="overall-prog" style="width:40%;"></div></div>
+      </div>
+      <div style="font-weight:800;font-size:1.1rem;color:var(--orange);" id="overall-count">2/5</div>
+    </div>
+
+    <div class="training-grid">
+      <div class="video-card done">
+        <div class="video-thumb done-thumb"><i data-lucide="check"></i></div>
+        <div style="flex:1;">
+          <div class="video-title">1. What is Digi Dukan?</div>
+          <div class="video-title-hi">Digi Dukan क्या है?</div>
+          <div class="video-meta">5 min &nbsp;·&nbsp; <span style="color:var(--green);">Completed ✓</span></div>
+          <div class="prog-bar"><div class="prog-fill green" style="width:100%;"></div></div>
+        </div>
+      </div>
+
+      <div class="video-card done">
+        <div class="video-thumb done-thumb"><i data-lucide="check"></i></div>
+        <div style="flex:1;">
+          <div class="video-title">2. Adding Products to Your Store</div>
+          <div class="video-title-hi">Products कैसे डालें?</div>
+          <div class="video-meta">8 min &nbsp;·&nbsp; <span style="color:var(--green);">Completed ✓</span></div>
+          <div class="prog-bar"><div class="prog-fill green" style="width:100%;"></div></div>
+        </div>
+      </div>
+
+      <div class="video-card" id="mod3" onclick="playVideo()">
+        <div class="video-thumb"><i data-lucide="play"></i></div>
+        <div style="flex:1;">
+          <div class="video-title">3. How to Manage Orders</div>
+          <div class="video-title-hi">Orders कैसे manage करें?</div>
+          <div class="video-meta">8 min &nbsp;·&nbsp; <span style="color:var(--orange);">In progress — 60%</span></div>
+          <div class="prog-bar"><div class="prog-fill orange" id="m3-fill" style="width:60%;"></div></div>
+        </div>
+        <i data-lucide="play-circle" style="width:28px;height:28px;color:var(--orange);flex-shrink:0;"></i>
+      </div>
+
+      <div class="video-card locked">
+        <div class="video-thumb grey-thumb"><i data-lucide="lock"></i></div>
+        <div style="flex:1;">
+          <div class="video-title">4. Returns &amp; Cancellations</div>
+          <div class="video-title-hi">वापसी और रद्दीकरण</div>
+          <div class="video-meta">5 min &nbsp;·&nbsp; Locked — complete Module 3</div>
+          <div class="prog-bar"><div class="prog-fill orange" style="width:0%;"></div></div>
+        </div>
+      </div>
+
+      <div class="video-card locked">
+        <div class="video-thumb grey-thumb"><i data-lucide="lock"></i></div>
+        <div style="flex:1;">
+          <div class="video-title">5. Payments &amp; Getting Paid</div>
+          <div class="video-title-hi">Payment कैसे मिलेगी?</div>
+          <div class="video-meta">5 min &nbsp;·&nbsp; Locked</div>
+          <div class="prog-bar"><div class="prog-fill orange" style="width:0%;"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Inline Video Player -->
+    <div id="video-player" style="display:none;margin-top:1rem;">
+      <div style="background:var(--g800);border-radius:var(--r);height:210px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.75rem;position:relative;overflow:hidden;">
+        <div style="position:absolute;inset:0;background:linear-gradient(180deg,transparent 60%,rgba(0,0,0,.5));"></div>
+        <i data-lucide="play-circle" style="width:52px;height:52px;color:rgba(255,255,255,.9);z-index:1;"></i>
+        <div style="color:rgba(255,255,255,.8);font-size:.82rem;z-index:1;">Module 3 — How to Manage Orders · 8 min</div>
+        <div style="position:absolute;bottom:0;left:0;right:0;height:4px;background:rgba(255,255,255,.2);">
+          <div id="vp-bar" style="width:60%;height:100%;background:var(--orange);transition:width .3s;"></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:.5rem;margin-top:.75rem;">
+        <button class="btn btn-orange" style="flex:1;" onclick="advanceVideo()">
+          <i data-lucide="play"></i> Continue &nbsp;<span style="font-weight:400;font-size:.82rem;">/ जारी रखें</span>
+        </button>
+        <button class="btn btn-outline" style="width:48px;padding:0;justify-content:center;" onclick="document.getElementById('video-player').style.display='none';">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════
+     SCREEN: HELP
+══════════════════════════════ -->
+<div id="s-help" class="screen">
+  <div class="topbar">
+    <button class="topbar-back" onclick="nav('home')"><i data-lucide="arrow-left"></i></button>
+    <div class="topbar-title">Help &amp; Support <small>सहायता &nbsp;·&nbsp; సహాయం</small></div>
+  </div>
+  <div class="scroll-body">
+    <div class="help-grid">
+
+      <!-- Left col: contact -->
+      <div>
+        <div style="background:var(--green);border-radius:var(--r);padding:1.4rem;margin-bottom:1.25rem;text-align:center;box-shadow:0 4px 16px rgba(22,163,74,.3);">
+          <div style="font-size:2rem;margin-bottom:.3rem;">📞</div>
+          <div style="font-weight:800;font-size:1.1rem;color:#fff;">Call Us Anytime</div>
+          <div style="font-size:.85rem;color:rgba(255,255,255,.8);margin-bottom:.9rem;">कभी भी call करें — हम Hindi में बात करेंगे</div>
+          <a href="tel:18000001234" style="text-decoration:none;">
+            <div style="background:#fff;border-radius:10px;padding:.75rem 1.5rem;display:inline-flex;align-items:center;gap:.5rem;font-weight:800;font-size:1.1rem;color:var(--green);">
+              <i data-lucide="phone-call" style="width:20px;height:20px;"></i> 1800-000-1234
+            </div>
+          </a>
+          <div style="font-size:.72rem;color:rgba(255,255,255,.7);margin-top:.6rem;">Free · Toll-free · Mon–Sat 9am–7pm</div>
+        </div>
+
+        <div style="background:#dcfce7;border:1.5px solid #86efac;border-radius:var(--r);padding:1.1rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:1rem;">
+          <div style="font-size:2rem;flex-shrink:0;">💬</div>
+          <div style="flex:1;">
+            <div style="font-weight:700;">WhatsApp Support</div>
+            <div style="font-size:.78rem;color:var(--g600);">Chat karo Hindi mein · चैट करें</div>
+          </div>
+          <a href="https://wa.me/918000001234?text=Mujhe+help+chahiye" style="text-decoration:none;">
+            <button class="btn btn-green btn-sm" style="background:#25d366;"><i data-lucide="message-circle"></i> Chat</button>
+          </a>
+        </div>
+
+        <div style="background:var(--g50);border:1px solid var(--g200);border-radius:var(--r);padding:1rem;font-size:.8rem;color:var(--g600);text-align:center;">
+          Vendor ID: VND-8492 &nbsp;·&nbsp; Portal v1.1
+        </div>
+      </div>
+
+      <!-- Right col: FAQ -->
+      <div>
+        <div class="section-label">Common Questions / अक्सर पूछे जाने वाले सवाल</div>
+        <div class="card">
+          <div class="card-body" style="padding:.25rem 1.25rem;">
+
+            <div class="faq-item" onclick="toggleFaq(this)">
+              <div class="faq-q">How long does document review take? <i data-lucide="chevron-down"></i></div>
+              <div class="faq-q-hi">Documents की जाँच में कितना समय लगता है?</div>
+              <div class="faq-a">Usually <strong>24–48 hours</strong> on business days. You'll get a notification when done.<br><br><em>आमतौर पर 24-48 घंटे (working days में)। जाँच होने पर notification आएगा।</em></div>
+            </div>
+
+            <div class="faq-item" onclick="toggleFaq(this)">
+              <div class="faq-q">What is MOV? <i data-lucide="chevron-down"></i></div>
+              <div class="faq-q-hi">MOV (Minimum Order Value) क्या है?</div>
+              <div class="faq-a">MOV is the minimum cart value a retailer must reach before placing an order. Example: if MOV = ₹500, the retailer must add ₹500 of your products to the cart first.<br><br><em>MOV वो minimum amount है जो retailer को order करने से पहले cart में डालना होगा।</em></div>
+            </div>
+
+            <div class="faq-item" onclick="toggleFaq(this)">
+              <div class="faq-q">When will I receive payment? <i data-lucide="chevron-down"></i></div>
+              <div class="faq-q-hi">Payment कब मिलेगी?</div>
+              <div class="faq-a">Payment is settled to your bank account <strong>2 business days</strong> after delivery (T+2).<br><br><em>Order deliver होने के 2 business days के बाद bank account में payment आएगी।</em></div>
+            </div>
+
+            <div class="faq-item" onclick="toggleFaq(this)">
+              <div class="faq-q">My product was rejected — why? <i data-lucide="chevron-down"></i></div>
+              <div class="faq-q-hi">मेरा product reject क्यों हुआ?</div>
+              <div class="faq-a">Common reasons: wrong category, missing MRP, duplicate name, or missing brand. Open your Seller Store to fix it directly.<br><br><em>सामान्य कारण: गलत category, MRP missing, नाम पहले से है। Seller Store खोलें और वहाँ ठीक करें।</em></div>
+            </div>
+
+            <div class="faq-item" onclick="toggleFaq(this)" style="border-bottom:none;">
+              <div class="faq-q">What is FSSAI? Do I need it? <i data-lucide="chevron-down"></i></div>
+              <div class="faq-q-hi">FSSAI क्या है? मुझे चाहिए?</div>
+              <div class="faq-a">FSSAI license is mandatory for food/grocery vendors. Apply at <strong>fssai.gov.in</strong>. You can upload the acknowledgement slip while it's being processed.<br><br><em>खाने का सामान बेचते हैं तो FSSAI जरूरी है। fssai.gov.in पर apply करें।</em></div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /help-grid -->
+  </div>
+</div>
+
+</div><!-- /main-wrap -->
+
+<!-- ══ BOTTOM NAV (mobile) ══ -->
+<div class="bottom-nav" id="bottom-nav">
+  <button class="nav-tab active" id="tab-home" onclick="nav('home');setTab('home')">
+    <i data-lucide="home"></i><span>Home / होम</span>
+  </button>
+  <button class="nav-tab" id="tab-docs" onclick="nav('docs');setTab('docs')">
+    <i data-lucide="file-text"></i><span>Documents</span>
+  </button>
+  <button class="nav-tab" id="tab-training" onclick="nav('training');setTab('training')">
+    <i data-lucide="play-circle"></i><span>Training</span>
+  </button>
+  <button class="nav-tab" id="tab-help" onclick="nav('help');setTab('help')">
+    <i data-lucide="headphones"></i><span>Help / मदद</span>
+  </button>
+</div>
+
+<!-- ══ FLOATING CALL (mobile) ══ -->
+<button class="call-fab" id="call-fab" onclick="window.location='tel:18000001234'" title="Call Qwipo Support">
+  <i data-lucide="phone"></i>
+</button>
+
+<!-- ══ TOAST ══ -->
+<div id="toast">
+  <i data-lucide="check-circle"></i>
+  <span id="toast-msg">Done!</span>
+</div>
+
+<script>
+  lucide.createIcons();
+
+  const screenMap = {
+    home:'s-home', docs:'s-docs',
+    training:'s-training', help:'s-help', login:'s-login'
+  };
+
+  function nav(name) {
+    Object.values(screenMap).forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.classList.remove('active');
+    });
+    const target = document.getElementById(screenMap[name] || name);
+    if (target) target.classList.add('active');
+    lucide.createIcons();
+    window.scrollTo(0, 0);
+    document.querySelector('.main-wrap').scrollTop = 0;
+  }
+
+  function setTab(name) {
+    document.querySelectorAll('.nav-tab, .sidebar-tab').forEach(t => t.classList.remove('active'));
+    const bt = document.getElementById('tab-'  + name);
+    const st = document.getElementById('stab-' + name);
+    if (bt) bt.classList.add('active');
+    if (st) st.classList.add('active');
+  }
+
+  /* ── LOGIN ── */
+  function sendOtp() {
+    const ph = document.getElementById('phone-input').value || '98765 43210';
+    document.getElementById('otp-phone-display').textContent = '+91 ' + ph;
+    document.getElementById('login-phone').style.display = 'none';
+    document.getElementById('login-otp').style.display = 'block';
+    lucide.createIcons();
+    toast('OTP sent / OTP भेजा गया ✓');
+  }
+
+  function otpNext(el, idx) {
+    if (el.value.length === 1 && idx < 4) {
+      const boxes = el.parentElement.querySelectorAll('.otp-box');
+      if (boxes[idx]) boxes[idx].focus();
+    }
+    const boxes = document.querySelectorAll('.otp-box');
+    if (Array.from(boxes).every(b => b.value.length === 1)) setTimeout(verifyOtp, 400);
+  }
+
+  function verifyOtp() {
+    toast('Login successful! / लॉगिन हो गया ✓');
+    setTimeout(() => {
+      document.getElementById('s-login').classList.remove('active');
+      document.getElementById('shell').classList.add('logged-in');
+      nav('home');
+      setTab('home');
+    }, 600);
+  }
+
+  /* ── LANG ── */
+  function setLang(lang, btn) {
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const msgs = { hi:'हिन्दी में switch हुआ ✓ (demo)', te:'తెలుగు లో switch అయింది ✓ (demo)', en:'Switched to English ✓' };
+    toast(msgs[lang] || 'Done');
+  }
+
+  /* ── DOC UPLOAD ── */
+  function triggerDocUpload(type) {
+    toast('Select a file to upload / file चुनें');
+  }
+
+  function simulateDocUpload() {
+    const zone = document.getElementById('doc-upload-zone');
+    zone.classList.add('uploading');
+    zone.innerHTML = `<i data-lucide="loader" style="width:36px;height:36px;display:block;margin:0 auto .5rem;color:var(--orange);"></i><div class="photo-zone-title" style="color:var(--orange);">Uploading… / अपलोड हो रहा है…</div>`;
+    lucide.createIcons();
+    setTimeout(() => {
+      zone.classList.remove('uploading');
+      zone.innerHTML = `<i data-lucide="check-circle-2" style="width:36px;height:36px;display:block;margin:0 auto .5rem;color:var(--green);"></i><div class="photo-zone-title" style="color:var(--green);">Uploaded! / अपलोड हो गया ✓</div><div class="photo-zone-sub">Tap again to upload another document</div>`;
+      lucide.createIcons();
+      const row = document.getElementById('bank-doc-row');
+      if (row) {
+        row.className = 'doc-row uploaded';
+        row.innerHTML = `<div class="doc-icon green"><i data-lucide="badge-check"></i></div><div class="doc-info"><div class="doc-name">Cancelled Cheque</div><div class="doc-name-hi">बैंक का रद्द चेक</div><div class="doc-status ok">✓ Uploaded · Under review</div></div><span class="badge badge-yellow">Review</span>`;
+        lucide.createIcons();
+      }
+      toast('Document uploaded / दस्तावेज़ अपलोड हुआ ✓');
+    }, 1800);
+  }
+
+  /* ── TRAINING ── */
+  function playVideo() {
+    const vp = document.getElementById('video-player');
+    vp.style.display = 'block';
+    vp.scrollIntoView({ behavior: 'smooth' });
+    lucide.createIcons();
+  }
+
+  function advanceVideo() {
+    const bar  = document.getElementById('vp-bar');
+    const fill = document.getElementById('m3-fill');
+    let pct = 60;
+    const iv = setInterval(() => {
+      pct = Math.min(pct + 10, 100);
+      if (bar)  bar.style.width  = pct + '%';
+      if (fill) fill.style.width = pct + '%';
+      if (pct >= 100) {
+        clearInterval(iv);
+        setTimeout(() => {
+          document.getElementById('video-player').style.display = 'none';
+          const card = document.getElementById('mod3');
+          if (card) {
+            card.className = 'video-card done';
+            card.onclick = null;
+            card.querySelector('.video-thumb').className = 'video-thumb done-thumb';
+            card.querySelector('.video-thumb').innerHTML = '<i data-lucide="check"></i>';
+            card.querySelector('.video-meta').innerHTML = '8 min &nbsp;·&nbsp; <span style="color:var(--green);">Completed ✓</span>';
+          }
+          document.getElementById('overall-prog').style.width = '60%';
+          document.getElementById('overall-count').textContent = '3/5';
+          lucide.createIcons();
+          toast('Module 3 complete! Module 4 unlocked 🎉');
+        }, 300);
+      }
+    }, 150);
+  }
+
+  /* ── FAQ ── */
+  function toggleFaq(item) {
+    const ans  = item.querySelector('.faq-a');
+    const icon = item.querySelector('.faq-q svg');
+    const isOpen = ans.style.display === 'block';
+    document.querySelectorAll('.faq-a').forEach(a => a.style.display = 'none');
+    document.querySelectorAll('.faq-q svg').forEach(ic => ic.setAttribute('data-lucide','chevron-down'));
+    lucide.createIcons();
+    if (!isOpen) {
+      ans.style.display = 'block';
+      if (icon) { icon.setAttribute('data-lucide','chevron-up'); lucide.createIcons(); }
+    }
+  }
+
+  /* ── TOAST ── */
+  function toast(msg) {
+    const el = document.getElementById('toast');
+    document.getElementById('toast-msg').innerHTML = msg;
+    el.style.opacity = '1';
+    el.style.transform = 'translateX(-50%) translateY(0)';
+    lucide.createIcons();
+    setTimeout(() => { el.style.opacity='0'; el.style.transform='translateX(-50%) translateY(20px)'; }, 2500);
+  }
+</script>
+</body>
+</html>
